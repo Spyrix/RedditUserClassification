@@ -200,7 +200,15 @@ for user in tqdm(targetSubComments_df.author.unique()):
     if(len(regularUserCounts.loc[regularUserCounts['body']==targetCount].author)==0):
         #no one had the same comment count. I don't expect this to happen too often
         print("no regular user had the same comment count as\n",user, targetCount, file=f)
-        continue
+
+        #drop the offending user from the dataframe
+        #targetSubComments_df = targetSubComments_df[targetSubComments_df.author != user]
+        #continue
+        #search for the closest count one increment at a time
+        while(len(regularUserCounts.loc[regularUserCounts['body']==targetCount].author)==0):
+            targetCount = targetCount - 1
+            if(targetCount == 0):
+                raise Exception("targetCount is 0, something wrong with logic or dataset")
     name = regularUserCounts.loc[regularUserCounts['body']==targetCount].author.sample().iloc[0]
     #drop the user from our collection, then append it to our list
     regularUserCounts = regularUserCounts[regularUserCounts.author != name]
